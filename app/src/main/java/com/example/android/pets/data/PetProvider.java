@@ -2,6 +2,7 @@ package com.example.android.pets.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -17,6 +18,19 @@ public class PetProvider extends ContentProvider {
     public static final String LOG_TAG = PetProvider.class.getSimpleName();
     /** Dabase helper object */
     private PetDbHelper mDbHelper;
+
+
+    private static final int PETS = 100;
+    private static final int PETS_ID = 101;
+
+    private static final UriMatcher sUrimacher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+
+        sUrimacher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
+        sUrimacher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PETS_ID);
+
+    }
 
 
     /**
