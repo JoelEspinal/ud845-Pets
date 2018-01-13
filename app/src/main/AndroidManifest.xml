@@ -38,8 +38,8 @@
                 android:value=".CatalogActivity" />
         </activity>
         <provider
-            android:authorities=".data.petProvider"
-            android:name="com.example.android.pets.data.PetProvider"
+            android:authorities="com.example.android.pets"
+            android:name=".data.PetProvider"
             android:exported="false"/>
     </application>
 </manifest>
