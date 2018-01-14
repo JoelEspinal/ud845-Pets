@@ -145,16 +145,15 @@ public class EditorActivity extends AppCompatActivity {
  //       long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
 
         Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
-        long newRowId = ContentUris.parseId(newUri); // return the of given Uri or -1
 
 
         // Show a toast message depending on whether or not the insertion was successful
-        if (newRowId == -1) {
+        if (newUri == null) {
             // If the row ID is -1, then there was an error with insertion.
-            Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.editor_insert_pet_failed), Toast.LENGTH_SHORT).show();
         } else {
             // Otherwise, the insertion was successful and we can display a toast with the row ID.
-            Toast.makeText(this, "Pet saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_SHORT).show();
         }
     }
 
