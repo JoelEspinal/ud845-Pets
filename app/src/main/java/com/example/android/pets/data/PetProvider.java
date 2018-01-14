@@ -92,7 +92,19 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        final int match = sUrimacher.match(uri);
+        switch(match){
+            case PETS:
+                insertPet(uri, values);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+    }
+
+    private Uri insertPet(Uri uri, ContentValues values){
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        long id = database.insert(PetEntry.TABLE_NAME, null, values);
+        return ContentUris.withAppendedId(uri, id);
     }
 
     /**
@@ -111,4 +123,6 @@ public class PetProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
     }
+
+
 }
