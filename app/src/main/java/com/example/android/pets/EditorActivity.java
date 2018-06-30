@@ -75,6 +75,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle(R.string.editor_activity_title_new_pet);
         } else {
             setTitle(R.string.editor_activity_title_edit_pet);
+            getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
         }
 
         // Find all relevant views that we will need to read user input from
@@ -85,7 +86,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         setupSpinner();
 
-        getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
     }
 
     /**
@@ -216,9 +216,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 PetEntry.COLUMN_PET_GENDER,
                 PetEntry.COLUMN_PET_WEIGHT };
 
-       // String selection = PetEntry._ID + " = ?";
-       // String [] selectionArgs = new String [] {Integer.toString(id)};
-
         return new CursorLoader(this,
                 mCurrentPetUri,  // Query the content URI for the current pet
                 projection,
@@ -263,6 +260,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mNameEditText.setText("");
+        mBreedEditText.setText("");
+        mWeightEditText.setText("0");
+        mGenderSpinner.setSelection(0);
     }
 }
