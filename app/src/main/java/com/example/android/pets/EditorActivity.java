@@ -16,12 +16,10 @@
 package com.example.android.pets;
 
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -36,9 +34,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -134,7 +130,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /**
      * Get user input from editor and save new pet into database.
      */
-    private void insertPet() {
+    private void savePet() {
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
         String nameString = mNameEditText.getText().toString().trim();
@@ -160,14 +156,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
-        // Insert a new row for pet in the database, returning the ID of that new row.
- //       long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
-
-        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+        int rowsAffected = 0;
+        if (mCurrentPetUri == null) {
+            getContentResolver().insert(PetEntry.CONTENT_URI, values);
+        } else {
+            rowsAffected = getContentResolver().update(mCurrentPetUri,values, null, null);
+        }
 
 
         // Show a toast message depending on whether or not the insertion was successful
-        if (newUri == null) {
+        if (rowsAffected == 0) {
             // If the row ID is -1, then there was an error with insertion.
             Toast.makeText(this, getString(R.string.editor_insert_pet_failed), Toast.LENGTH_SHORT).show();
         } else {
@@ -191,7 +189,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Save pet to database
-                insertPet();
+                savePet();
                 // Exit activity
                 finish();
                 return true;
