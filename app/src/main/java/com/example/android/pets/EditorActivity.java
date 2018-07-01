@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
@@ -136,17 +137,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String nameString = mNameEditText.getText().toString().trim();
         String breedString = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
-        int weight = 0;
 
-        if(!weightString.isEmpty()){
+        if (mCurrentPetUri == null && TextUtils.isEmpty(nameString) && TextUtils.isEmpty(breedString)
+                && TextUtils.isEmpty(weightString) && mGender == PetEntry.GENDER_UNKNOWN) { return; }
+
+        int weight = 0;
+        if (!TextUtils.isEmpty(weightString)) {
             weight = Integer.parseInt(weightString);
         }
-
-        // Create database helper
-   //     PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        // Gets the database in write mode
-   //     SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a ContentValues object where column names are the keys,
         // and pet attributes from the editor are the values.
