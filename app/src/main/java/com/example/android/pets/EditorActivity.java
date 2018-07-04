@@ -86,6 +86,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mCurrentPetUri = getIntent().getData();
         if (mCurrentPetUri == null) {
             setTitle(R.string.editor_activity_title_new_pet);
+            invalidateOptionsMenu();
         } else {
             setTitle(R.string.editor_activity_title_edit_pet);
             getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
@@ -186,6 +187,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Otherwise, the insertion was successful and we can display a toast with the row ID.
             Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (mCurrentPetUri == null) {
+            MenuItem menuItem = menu.findItem(R.menu.menu_editor);
+            menuItem.setVisible(false);
+        }
+
+        return true;
     }
 
     @Override
