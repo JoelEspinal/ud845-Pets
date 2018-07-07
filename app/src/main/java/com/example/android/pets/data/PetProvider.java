@@ -28,12 +28,12 @@ public class PetProvider extends ContentProvider {
     private static final int PETS = 100;
     private static final int PETS_ID = 101;
 
-    private static final UriMatcher sUrimacher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
 
-        sUrimacher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
-        sUrimacher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PETS_ID);
+        sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
+        sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PETS_ID);
     }
 
 
@@ -59,7 +59,9 @@ public class PetProvider extends ContentProvider {
 
         Cursor cursor;
 
-        int match = sUrimacher.match(uri);
+        int match = sUriMatcher.match(uri);
+        Log.d("Delete", match + "");
+
         switch(match){
             case PETS:
                 cursor = database.query(PetEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
@@ -86,7 +88,7 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        final int match = sUrimacher.match(uri);
+        final int match = sUriMatcher.match(uri);
         switch (match) {
             case PETS:
                 return PetEntry.CONTENT_LIST_TYPE;
@@ -104,7 +106,7 @@ public class PetProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         Log.d("uri", uri.toString());
-        final int match = sUrimacher.match(uri);
+        final int match = sUriMatcher.match(uri);
         switch(match){
             case PETS:
                 return insertPet(uri, values);
@@ -151,7 +153,7 @@ public class PetProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
-        final int match = sUrimacher.match(uri);
+        final int match = sUriMatcher.match(uri);
 
         int rowsDeleted;
 
@@ -160,10 +162,13 @@ public class PetProvider extends ContentProvider {
                 rowsDeleted = database.delete(PetEntry.TABLE_NAME, selection, selectionArgs);
             break;
             case PETS_ID:
-                selection = PETS_ID + "=?";
+                selection = PetEntry._ID + "=?";
+                Log.d("DELETE", selection + "  " + ContentUris.parseId(uri));
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsDeleted = database.delete(PetEntry.TABLE_NAME, selection, selectionArgs);
-            break;
+                Log.d("DELETE",  "Rows Deleted" + rowsDeleted);
+
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
@@ -181,7 +186,7 @@ public class PetProvider extends ContentProvider {
      */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        final int match = sUrimacher.match(uri);
+        final int match = sUriMatcher.match(uri);
         switch(match){
             case PETS:
                 return updatePet(uri, values, selection, selectionArgs);
