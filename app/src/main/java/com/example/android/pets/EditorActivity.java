@@ -233,10 +233,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
+       // super.onPrepareOptionsMenu(menu);
 
         if (mCurrentPetUri == null) {
-            MenuItem menuItem = menu.findItem(R.menu.menu_editor);
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
         }
 
